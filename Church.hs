@@ -136,7 +136,7 @@ sub = \n -> \f -> \x -> n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
 mult :: (a1 -> a) -> (a2 -> a1) -> a2 -> a
 mult = \m -> \n -> \f -> m (n f)
 
--- Church division
+-- Church Division
 {- λc.λn.λm.λf.λx.(λd.is_zero d (0 f x) (f (c d m f x))) (sub n m)
  - Rquires working sub:
 div = \c -> \n -> \m -> \f -> \x -> (\d -> is_zero d (0 f x) (f (c d m f x))) (sub n m)
@@ -163,17 +163,27 @@ first = \p -> p (\x -> \y -> x)
 second :: ((a1 -> a2 -> a2) -> a) -> a
 second = \p -> p (\x -> \y -> y)
 
+-- Church Pairs (nil)
+-- pair true true
 nil :: ((a1 -> a1 -> a1) -> (a2 -> a2 -> a2) -> a) -> a
 nil = pair true true
 
+-- Church Comparison (is_nil)
+-- first (true for nil pair)
 is_nil :: ((a2 -> a1 -> a2) -> a) -> a
 is_nil = first
 
+-- Church Cons
+-- λh.λt.pair false (pair h t)
 cons :: a2 -> a3 -> ((a1 -> a1 -> a1) -> ((a2 -> a3 -> a4) -> a4) -> a) -> a
 cons = \h -> \t -> pair false (pair h t)
 
+-- Church Head
+-- λz.first (second z)
 head :: ((a3 -> a4 -> a4) -> (a2 -> a1 -> a2) -> a) -> a
 head = \z -> first (second z)
 
+-- Church Tail
+-- λz.second (second z)
 tail :: ((a3 -> a4 -> a4) -> (a1 -> a2 -> a2) -> a) -> a
 tail = \z -> second (second z)
