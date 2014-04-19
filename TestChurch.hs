@@ -5,6 +5,7 @@
 import Test.HUnit
 import Church
 
+
 test_true = TestCase (assertBool "true == True" 
   (Church.unchurch_bool Church.true))
 test_true_num = TestCase (assertEqual "true 2.5 3.2 == 2.5" 

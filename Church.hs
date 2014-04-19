@@ -35,27 +35,27 @@ not = \p -> \a -> \b -> p b a
 xor = \a -> \b -> a (not b) b
 
 
--- Church Numeral - 0
+-- Church Numeral: 0
 -- λf.λx.x
 zero :: (a -> a) -> a -> a
 zero = \f -> \x -> x
 
--- Church Numeral - 1
+-- Church Numeral: 1
 -- λf.λx.f x
 one :: (a -> a) -> a -> a
 one = \f -> \x -> f x
 
--- Church Numeral - 2
+-- Church Numeral: 2
 -- λf.λx.f (f x)
 two :: (a -> a) -> a -> a
 two = \f -> \x -> f (f x)
 
--- Church Numeral - 3
+-- Church Numeral: 3
 -- λf.λx.f (f (f x))
 three :: (a -> a) -> a -> a
 three = \f -> \x -> f (f (f x))
 
--- Church Numeral - n (any)
+-- Church Numeral: n (where n ∈ ℕ)
 -- num 0 = λf.λx.x
 -- num n = λf.λx.f (num (n-1) f x)
 num :: Integer -> (a -> a) -> a -> a;
