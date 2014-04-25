@@ -3,7 +3,7 @@
  - By Risto Stevcev  -}
 
 module Church where
-import Prelude hiding (succ, pred, and, or, not, exp)
+import Prelude hiding (succ, pred, and, or, not, exp, head, tail)
 
 
 -- Church Boolean (True)
@@ -73,18 +73,6 @@ ifelse = \p -> \a -> \b -> p a b
 is_zero :: ((a2 -> a -> a -> a) -> (a1 -> a1 -> a1) -> a0) -> a0
 is_zero = \n -> n (\x -> false) true
 
--- Church Comparison (<=)
-{- λm.λn.is_zero (sub m n)
- - Requires working sub:
-leq = \m -> \n -> is_zero (sub m n)
- -} 
-
--- Church Comparison (==)
-{- λm.λn.and (leq m n) (leq n m)
- - Rquires working sub:
-eq = \m -> \n -> and (leq m n) (leq n m) 
- -}
-
 
 -- Convert Church Numeral to Haskell Integer
 -- λa.a (λb.b+1) (0)
@@ -116,31 +104,10 @@ pred = \n -> \f -> \x -> n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
 add :: (a2 -> a1 -> a) -> (a2 -> a3 -> a1) -> a2 -> a3 -> a
 add = \m -> \n -> \f -> \x -> m f (n f x)
 
--- Church Subtraction
--- λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
-{- Might be tempted to write:
-
-sub
-  :: (((a3 -> a2) -> (a2 -> a1) -> a1)
-      -> (a4 -> a5) -> (a6 -> a6) -> a)
-     -> a3 -> a5 -> a
-sub = \n -> \f -> \x -> n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
-
- - But this solution is too polymorphic for Haskell's Hindley-Milner type 
- - inference to handle. There is a solution, but it's hairy. More on this
- - some other time. (Church himself didn't think this was possible) 
- -}
-
 -- Church Multiplication
 -- λm.λn.λf.m (n f)
 mult :: (a1 -> a) -> (a2 -> a1) -> a2 -> a
 mult = \m -> \n -> \f -> m (n f)
-
--- Church Division
-{- λc.λn.λm.λf.λx.(λd.is_zero d (0 f x) (f (c d m f x))) (sub n m)
- - Rquires working sub:
-div = \c -> \n -> \m -> \f -> \x -> (\d -> is_zero d (0 f x) (f (c d m f x))) (sub n m)
- -}
 
 -- Church Exponentiation
 -- λm.λn.n m
