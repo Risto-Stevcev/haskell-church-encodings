@@ -95,9 +95,9 @@ test_two = TestCase $ assertEqual "numeral two == 2"
   2 (unchurch_num two)
 test_three = TestCase $ assertEqual "numeral three == 3"
   3 (unchurch_num three)
-test_num_12 = TestCase $ assertEqual "numeral three == 12"
+test_num_12 = TestCase $ assertEqual "numeral 12 == 12"
   12 (unchurch_num $ num 12)
-test_num_17 = TestCase $ assertEqual "numeral three == 17"
+test_num_17 = TestCase $ assertEqual "numeral 17 == 17"
   17 (unchurch_num $ num 17)
 test_num_123779 = TestCase $ assertEqual "numeral 123779 == 123779"
   123779 (unchurch_num $ num 123779)
@@ -117,7 +117,7 @@ tests_naturals =
 {- Test Conditionals -
  - - - - - - - - - - -}
 
-test_ifelse_true = TestCase $ assertEqual "ifelse true two three == 2"
+test_ifelse_true = TestCase $ assertEqual "ifelse true one three == 1"
   1 (unchurch_num $ ifelse true one three)
 test_ifelse_false = TestCase $ assertEqual "ifelse false two three == 3"
   3 (unchurch_num $ ifelse false two three) 
@@ -154,7 +154,7 @@ test_add_77_213 = TestCase $ assertEqual "add 77 213 == 290"
 
 test_sub_zero_zero = TestCase $ assertEqual "sub zero zero == 0"
   0 (unchurch_num $ sub zero zero)
-test_sub_zero_one = TestCase $ assertEqual "sub zero one == 1"
+test_sub_zero_one = TestCase $ assertEqual "sub zero one == 0"
   0 (unchurch_num $ sub zero one)
 test_sub_three_zero = TestCase $ assertEqual "sub three zero == 3"
   3 (unchurch_num $ sub three zero)
@@ -383,7 +383,7 @@ test_tuple2_zero_zero_second = TestCase $ assertEqual "second (tuple2 zero zero)
 
 test_tuple2_5_12_first = TestCase $ assertEqual "first (tuple2 5 12) == 5"
   5 (unchurch_num_elem $ tuple2_first $ tuple2 (ChurchNumber $ num 5) (ChurchNumber $ num 12))
-test_tuple2_5_12_second = TestCase $ assertEqual "second (tuple2 5 12) == 5"
+test_tuple2_5_12_second = TestCase $ assertEqual "second (tuple2 5 12) == 12"
   12 (unchurch_num_elem $ tuple2_second $ tuple2 (ChurchNumber $ num 5) (ChurchNumber $ num 12))
 
 test_tuple2_true_false_first = TestCase $ assertBool "first (tuple2 true false) == true"
@@ -460,7 +460,7 @@ test_subZ_zero_zero = TestCase $ assertEqual "subZ zero zero == 0"
   0 (unchurch_int $ subZ (convertNZ zero) (convertNZ zero))
 test_subZ_zero_one = TestCase $ assertEqual "subZ zero one == -1"
   (-1) (unchurch_int $ subZ (convertNZ zero) (convertNZ one))
-test_subZ_n14_99 = TestCase $ assertEqual "subZ -14 99 == -85"
+test_subZ_n14_99 = TestCase $ assertEqual "subZ -14 99 == -113"
   (-113) (unchurch_int $ subZ (neg $ convertNZ $ num 14) (convertNZ $ num 99))
 test_subZ_213_77 = TestCase $ assertEqual "subZ 213 77 == 136"
   136 (unchurch_int $ subZ (convertNZ $ num 213) (convertNZ $ num 77))

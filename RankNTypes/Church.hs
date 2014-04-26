@@ -162,9 +162,9 @@ exp :: Church -> Church -> Church;
 exp = \m -> \n -> Church $ (unChurch n) (unChurch m)
 
 -- Church Factorial
--- \f n.ifelse (is_zero n) one (mult n (fac (pred n)))
+-- λf n.ifelse (is_zero n) one (mult n (fac (pred n)))
 fac :: Church -> Church
-fac = y (\f n -> ifelse (is_zero n) one (mult n (fac (pred n))))
+fac = y (\f n -> ifelse (is_zero n) one (mult n $ f $ pred n))
 
 
 
