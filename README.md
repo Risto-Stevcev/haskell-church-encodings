@@ -2,7 +2,7 @@
 
 This exercise was to demonstrate and play around with church encodings in a more involved way, and as a way for me to gain experience with haskell and it's type system.
 
-**Church encodings** were developed by the late and famous Alonzo Church. Church is probably most well known for inventing **lambda calculus**, a formal branch of mathematics that introduces the notion of **lambas**, or *anonymous functions*. You may have used them before when programming.
+**Church encodings** were developed by the late and famous Alonzo Church. Church is probably most well known for inventing **lambda calculus**, a formal branch of mathematics that introduces the notion of **lambdas**, or *anonymous functions*. You may have used them before when programming.
 
 **Church encodings** are a very interesting development arising from **lambda calculus**. Church found out that every concept in programming languages can be represented using *functions*! everything from boolean logic, conditional statements, numbers (natural, integer, real, complex, imaginary), and even loops (infinite loops also)!
 
