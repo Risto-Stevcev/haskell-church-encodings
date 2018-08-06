@@ -83,7 +83,7 @@ three = Church $ \f -> \x -> f (f (f x))
 -- num 0 = λf.λx.x
 -- num n = λf.λx.f (num (n-1) f x)
 num :: Integer -> Church
-num 0 = Church $ \f -> \x -> x;
+num 0 = Church $ \f -> \x -> x
 num n = Church $ \f -> \x -> f ((unChurch $ num (n-1)) f x)
 
 -- Convert Church Numeral (n ∈ ℕ) to Haskell Integer
@@ -98,7 +98,7 @@ unchurch_num = \a -> unChurch a (\b -> b + 1) (0)
 
 -- Church Conditional (If/Else)
 -- λp.λa.λb.p a b
-ifelse :: ChurchBool -> a -> a -> a;
+ifelse :: ChurchBool -> a -> a -> a
 ifelse = \p -> \a -> \b -> p a b
 
 
@@ -127,7 +127,8 @@ ynr f = (\h -> h $ Mu h) (\x -> f . (\(Mu g) -> g) x $ x)
 
 -- Church Successor
 -- λn.λf.λx.f (n f x)
-succ :: Church -> Church;
+succ :: Church -> Church
+
 succ = \n -> Church $ \f -> \x -> f (unChurch n f x)
 
 -- Church Predecessor
@@ -158,7 +159,7 @@ div = y (\d n m -> ifelse (geq n m) (succ (d (sub n m) m)) zero)
 
 -- Church Exponentiation
 -- λm.λn.n m
-exp :: Church -> Church -> Church;
+exp :: Church -> Church -> Church
 exp = \m -> \n -> Church $ (unChurch n) (unChurch m)
 
 -- Church Factorial
@@ -173,7 +174,7 @@ fac = y (\f n -> ifelse (is_zero n) one (mult n $ f $ pred n))
 
 -- Church Comparison (== 0)
 -- λn.n (λx.false) true
-is_zero :: Church -> ChurchBool;
+is_zero :: Church -> ChurchBool
 is_zero = \n -> unChurch n (\x -> false) true
 
 -- Church Comparison (<)
@@ -198,7 +199,7 @@ geq = \m -> \n -> or (not (leq m n)) (eq m n)
 
 -- Church Comparison (>)
 -- λm.λn.not (leq m n)
-gt :: Church -> Church -> ChurchBool;
+gt :: Church -> Church -> ChurchBool
 gt = \m -> \n -> not (leq m n)
 
 
@@ -258,20 +259,20 @@ data ChurchElem = ChurchNumber Church | ChurchBoolean ChurchBool
 type ChurchTuple2 = forall a. (ChurchElem -> ChurchElem -> ChurchElem) -> ChurchElem
 
 -- Church Tuple (of size 2)
-tuple2 :: ChurchElem -> ChurchElem -> ChurchTuple2;
+tuple2 :: ChurchElem -> ChurchElem -> ChurchTuple2
 tuple2 = \x -> \y -> \z -> z x y
 
-tuple2_first :: ChurchTuple2 -> ChurchElem;
+tuple2_first :: ChurchTuple2 -> ChurchElem
 tuple2_first = \p -> p (\x -> \y -> x)
 
-tuple2_second :: ChurchTuple2 -> ChurchElem;
+tuple2_second :: ChurchTuple2 -> ChurchElem
 tuple2_second = \p -> p (\x -> \y -> y)
 
 unchurch_bool_elem :: ChurchElem -> Bool
-unchurch_bool_elem (ChurchBoolean x) = unchurch_bool x;
+unchurch_bool_elem (ChurchBoolean x) = unchurch_bool x
 
 unchurch_num_elem :: ChurchElem -> Integer
-unchurch_num_elem (ChurchNumber x) = unchurch_num x;
+unchurch_num_elem (ChurchNumber x) = unchurch_num x
 
 
 
