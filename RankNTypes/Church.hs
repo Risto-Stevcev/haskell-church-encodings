@@ -59,6 +59,14 @@ unchurch_bool = (\a -> \b -> \c -> c a b) True False
 type ChurchNum = forall a. (a -> a) -> a -> a
 newtype Church = Church { unChurch :: ChurchNum }
 
+-- Convenience functions for the Church type wrapper,
+-- analogous to liftM2 for monads.
+liftC :: (ChurchNum -> ChurchNum) -> Church -> Church
+liftC f (Church x) = Church (f x)
+
+liftC2 :: (ChurchNum -> ChurchNum -> ChurchNum) -> Church -> Church -> Church
+liftC2 f (Church x) (Church y) = Church (f x y)
+
 -- Church Numeral: 0
 -- λf.λx.x
 zero :: Church
@@ -129,18 +137,17 @@ ynr f = (\h -> h $ Mu h) (\x -> f . (\(Mu g) -> g) x $ x)
 -- λn.λf.λx.f (n f x)
 succ :: Church -> Church
 
-succ = \n -> Church $ \f -> \x -> f (unChurch n f x)
+succ = liftC $ \n -> \f -> \x -> f (n f x)
 
 -- Church Predecessor
 -- λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
 pred :: Church -> Church
-pred = \n -> Church $ 
-       \f -> \x -> unChurch n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
+pred = liftC $ \n -> \f -> \x -> n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
 
 -- Church Addition
 -- λm.λn.λf.λx.m f (n f x)
 add :: Church -> Church -> Church
-add = \m -> \n -> Church $ \f -> \x -> unChurch m f (unChurch n f x)
+add = liftC2 $ \m -> \n -> \f -> \x -> m f (n f x)
 
 -- Church Subtraction
 -- λm.λn. n pred m
@@ -150,7 +157,7 @@ sub = \m -> \n -> unChurch n pred m
 -- Church Multiplication
 -- λm.λn.λf.m (n f)
 mult :: Church -> Church -> Church
-mult = \m -> \n -> Church $ \f -> unChurch m (unChurch n f)
+mult = liftC2 $ \m -> \n -> \f -> m (n f)
 
 -- Church Division (gets the floor if divides to a fraction)
 -- λd n m.ifelse (geq n m) (succ (d (sub n m) m)) zero
@@ -160,7 +167,7 @@ div = y (\d n m -> ifelse (geq n m) (succ (d (sub n m) m)) zero)
 -- Church Exponentiation
 -- λm.λn.n m
 exp :: Church -> Church -> Church
-exp = \m -> \n -> Church $ (unChurch n) (unChurch m)
+exp = liftC2 $ \m -> \n -> n m
 
 -- Church Factorial
 -- λf n.ifelse (is_zero n) one (mult n (fac (pred n)))
