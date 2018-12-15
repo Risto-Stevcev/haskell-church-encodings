@@ -23,6 +23,11 @@ So far I've translated church booleans, church boolean operators, church conditi
 I can still translate the leftover operators for integers, as well as real, rational, imaginary and complex numbers.
 
 
+## ImpredicativeTypes
+
+This avoids having to roll and unroll Church numerals, but comes at the expense of type inference in many of the places they're used, since Haskell doesn't currently support inferring impredicative types.
+
+
 ## Credits
 
 I'd like to give credit where it's due:
