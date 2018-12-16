@@ -208,15 +208,24 @@ gt = \m -> \n -> not (leq m n)
 pair :: a1 -> a2 -> (a1 -> a2 -> a) -> a
 pair = \x -> \y -> \z -> z x y
 
+pairC :: Church -> Church -> (Church -> Church -> a) -> a
+pairC = pair @Church @Church
+
 -- Church Pairs (first item)
 -- λp.p -> (λx.λy.x)
 first :: ((a2 -> a1 -> a2) -> a) -> a
 first = \p -> p (\x -> \y -> x)
 
+firstC :: ((Church -> Church -> Church) -> Church) -> Church
+firstC = first @Church @Church @Church
+
 -- Church Pairs (second item)
 -- λp.p -> (λx.λy.y)
 second :: ((a1 -> a2 -> a2) -> a) -> a
 second = \p -> p (\x -> \y -> y)
+
+secondC :: ((Church -> Church -> Church) -> Church) -> Church
+secondC = second @Church @Church @Church
 
 -- Church Pairs (nil)
 -- pair true true
@@ -281,12 +290,12 @@ type ChurchInteger = forall a. (Church -> Church -> Church) -> Church
 -- Convert Church Numeral (natural number) to Church Integer
 -- λx.pair x zero
 convertNZ :: Church -> ChurchInteger
-convertNZ = \x -> pair @Church @Church x zero
+convertNZ = \x -> pairC x zero
 
 -- Church Negation
 -- λx.pair (second x) (first x)
 neg :: ChurchInteger -> ChurchInteger
-neg = \x -> pair @Church @Church (second @Church @Church @Church x) (first @Church @Church @Church x)
+neg = \x -> pairC (secondC x) (firstC x)
 
 -- Church OneZero 
 -- (Fixes incorrect integer representations that don't have a zero in the pair. 
@@ -294,16 +303,16 @@ neg = \x -> pair @Church @Church (second @Church @Church @Church x) (first @Chur
 -- λoneZ x.ifelse (is_zero (first x)) 
 --   x (ifelse (is_zero (second x)) x (oneZ (pair (pred (first x)) (pred (second x)))))
 onezero :: ChurchInteger -> ChurchInteger
-onezero  = y @(ChurchInteger -> ChurchInteger) ( \oneZ x -> ifelse (is_zero $ first @Church @Church @Church x) x
-                            (ifelse (is_zero $ second @Church @Church @Church x) x
-                              (oneZ $ pair @Church @Church (pred $ first @Church @Church @Church x) (pred $ second @Church @Church @Church x))) )
+onezero  = y @(ChurchInteger -> ChurchInteger) ( \oneZ x -> ifelse (is_zero $ firstC x) x
+                            (ifelse (is_zero $ secondC x) x
+                              (oneZ $ pairC (pred $ firstC x) (pred $ secondC x))) )
 
 -- Convert Church Integer to Haskell Integer
 -- λx.ifelse (is_zero (first x)) (-1*(unchurch_num (second x))) 
 --                               (unchurch_num (first x))
 unchurch_int :: ChurchInteger -> Integer
-unchurch_int = \x -> ifelse (is_zero (first @Church @Church @Church x))
-                       ((-1)*(unchurch_num $ second @Church @Church @Church x)) (unchurch_num $ first @Church @Church @Church x)
+unchurch_int = \x -> ifelse (is_zero (firstC x))
+                       ((-1)*(unchurch_num $ secondC x)) (unchurch_num $ firstC x)
 
 
 
@@ -313,19 +322,19 @@ unchurch_int = \x -> ifelse (is_zero (first @Church @Church @Church x))
 -- Church Addition
 -- λx.λy.onezero (pair (add (first x) (first y)) (add (second x) (second y)))
 addZ :: ChurchInteger -> ChurchInteger -> ChurchInteger
-addZ = \x -> \y -> onezero (pair @Church @Church (add (first @Church @Church @Church x) (first @Church @Church @Church y)) (add (second @Church @Church @Church x) (second @Church @Church @Church y)))
+addZ = \x -> \y -> onezero (pairC (add (firstC x) (firstC y)) (add (secondC x) (secondC y)))
 
 -- Church Subtraction
 -- λx.λy.onezero (pair (add (first x) (second y)) (add (second x) (first y)))
 subZ :: ChurchInteger -> ChurchInteger -> ChurchInteger
-subZ = \x -> \y -> onezero (pair @Church @Church (add (first @Church @Church @Church x) (second @Church @Church @Church y)) (add (second @Church @Church @Church x) (first @Church @Church @Church y)))
+subZ = \x -> \y -> onezero (pairC (add (firstC x) (secondC y)) (add (secondC x) (firstC y)))
 
 -- Church Multiplication
 -- λx.λy.pair (add (mult (first x) (first y)) (mult (second x) (second y)))
 --            (add (mult (first x) (second y)) (mult (second x) (first y)))
 multZ :: ChurchInteger -> ChurchInteger -> ChurchInteger
-multZ = \x -> \y -> pair @Church @Church (add (mult (first @Church @Church @Church x) (first @Church @Church @Church y)) (mult (second @Church @Church @Church x) (second @Church @Church @Church y)))
-                         (add (mult (first @Church @Church @Church x) (second @Church @Church @Church y)) (mult (second @Church @Church @Church x) (first @Church @Church @Church y)))
+multZ = \x -> \y -> pairC (add (mult (firstC x) (firstC y)) (mult (secondC x) (secondC y)))
+                         (add (mult (firstC x) (secondC y)) (mult (secondC x) (firstC y)))
 
 -- Church DivNoZero
 -- (Divides only if the value is not zero)
@@ -337,5 +346,5 @@ divnZ = \x -> \y -> is_zero y zero (div x y)
 -- λx.λy.pair (add (divnZ (first x) (first y)) (divnZ (second x) (second y)))
 --            (add (divnZ (first x) (second y)) (divnZ (second x) (first y)))
 divZ :: ChurchInteger -> ChurchInteger -> ChurchInteger
-divZ = \x -> \y -> pair @Church @Church (add (divnZ (first @Church @Church @Church x) (first @Church @Church @Church y)) (divnZ (second @Church @Church @Church x) (second @Church @Church @Church y)))
-                        (add (divnZ (first @Church @Church @Church x) (second @Church @Church @Church y)) (divnZ (second @Church @Church @Church x) (first @Church @Church @Church y)))
+divZ = \x -> \y -> pairC (add (divnZ (firstC x) (firstC y)) (divnZ (secondC x) (secondC y)))
+                        (add (divnZ (firstC x) (secondC y)) (divnZ (secondC x) (firstC y)))
