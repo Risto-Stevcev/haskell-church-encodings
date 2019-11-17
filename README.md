@@ -16,7 +16,7 @@ My first attempt at fleshing out church encodings involved absolutely no type de
 
 ## RankNTypes
 
-This is my final attempt and has worked for every church encoding I have attempted so far. I translated all of the encodings from the [chuch encoding](https://en.wikipedia.org/wiki/Church_encoding) wikipedia page. 
+This is my final attempt and has worked for every church encoding I have attempted so far. I translated all of the encodings from the [church encoding](https://en.wikipedia.org/wiki/Church_encoding) wikipedia page. 
 
 So far I've translated church booleans, church boolean operators, church conditionals, church comparison operators, church numerals (natural numbers), church arithmetic operators (for natural numbers), church lists, church 2-tuples, church integers, loops with the y-combinator, and church arithmetic operators (for integers) less the exponential and factorial operators. 
 
@@ -31,7 +31,7 @@ I'd like to give credit where it's due:
 
 * [luqui](http://stackoverflow.com/questions/6595749/subtraction-of-church-numerals-in-haskell)'s StackOverflow post for uncovering how to move past the limitation's of Haskell's Hindley-Milner type system in order to implement church subtraction (and everything that follows it).
 
-* The [chuch encoding](https://en.wikipedia.org/wiki/Church_encoding) wikipedia page for being so incredibly detailed and informative.
+* The [church encoding](https://en.wikipedia.org/wiki/Church_encoding) wikipedia page for being so incredibly detailed and informative.
 
 And finally, Church himself, for being such a badass!
 
